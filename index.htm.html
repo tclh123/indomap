@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IndoMap - indoor map with routing</title>
+
+    <link rel="stylesheet" type="text/css" href="script/css/style.css" />
+
+    <script type="text/javascript" src="script/threejs/build/three.js"></script>
+    <script type="text/javascript" src="script/jquery-1.7.2.js"></script>
+
+    <script type="text/javascript" src="script/indo.js"></script>
+    <script type="text/javascript" src="script/data.js"></script>
+
+    <script>
+
+        var SCREEN_WIDTH = window.innerWidth,
+                SCREEN_HEIGHT = window.innerHeight;
+
+        var camera, scene, renderer;
+
+        $(document).ready(function() {
+            init();
+            animate();
+        });
+
+        function init() {
+            var container = $("#container")[0];
+
+            camera = new THREE.PerspectiveCamera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000);
+            camera.position.z = 100;
+
+//            camera.position.x = 0;//设置相机的位置坐标
+//            camera.position.y = 50;//设置相机的位置坐标
+//            camera.position.z = 100;//设置相机的位置坐标
+//            camera.up.x = 0;//设置相机的上为「x」轴方向
+//            camera.up.y = 1;//设置相机的上为「y」轴方向
+//            camera.up.z = 0;//设置相机的上为「z」轴方向
+//            camera.lookAt( {x:0, y:0, z:0 } );//设置视野的中心坐标
+
+
+            scene = new THREE.Scene();
+
+            renderer = new THREE.CanvasRenderer();
+            renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            container.appendChild(renderer.domElement);
+        }
+
+        function animate() {
+//            requestAnimationFrame(animate);
+            render();
+        }
+
+        function render() {
+            // particles
+
+            var PI2 = Math.PI * 2;
+            var material = new THREE.ParticleCanvasMaterial( {
+
+                color: 0x000000,
+                program: function ( context ) {
+
+                    context.beginPath();
+                    context.arc( 0, 0, 1, 0, PI2, true );
+                    context.closePath();
+                    context.fill();
+
+                }
+
+            } );
+
+            var geometry = new THREE.Geometry();
+
+            for(var i in testdata) {
+                var t = testdata[i];
+
+                var particle = new THREE.Particle( material );
+                particle.position.x = t.position.x;
+                particle.position.y = t.floor;
+                particle.position.z = t.position.z;
+
+                particle.position.multiplyScalar( 10 );
+
+                scene.add( particle );
+
+                geometry.vertices.push( particle.position );
+            }
+
+            // lines
+
+            var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.5 } ) );
+            scene.add( line );
+
+//            renderer.autoClear = false;       // no use?????
+//            renderer.clear();
+
+            renderer.render( scene, camera );
+        }
+    </script>
+</head>
+<body>
+    <div id="container"></div>
+</body>
+</html>
