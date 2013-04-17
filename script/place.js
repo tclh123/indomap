@@ -22,35 +22,38 @@ INDO.Place.prototype = Object.create( INDO.Math.Vector3.prototype );
 
 // 教室
 INDO.Room = function(x, y, scaleX, scaleY, floor, floorHeight, tiltAngle, xEnd, roomid) {
-    INDO.Place.call(this, x*scaleX, floor*floorHeight+(xEnd-x)*scaleX*Math.tan(tiltAngle), y*scaleY, 'Room '+roomid);
+//    INDO.Place.call(this, x*scaleX, floor*floorHeight+(xEnd-x)*scaleX*Math.tan(tiltAngle), y*scaleY, 'Room '+roomid);
+    INDO.Place.call(this, x*scaleX, floor*floorHeight-(x-xEnd)*scaleX*Math.tan(tiltAngle), y*scaleY, 'Room '+roomid);
     this.roomid = roomid;
 };
 INDO.Room.prototype = Object.create( INDO.Place.prototype );
 
 // 厕所
-INDO.Wc = function(x, y, scaleX, scaleY, floor, floorHeight, tiltAngle, xEnd, WcID) {
-    INDO.Place.call(this, x*scaleX, floor*floorHeight+(xEnd-x)*scaleX*Math.tan(tiltAngle), y*scaleY, 'WC '+WcID);
-    this.WcID = WcID;
+INDO.Wc = function(x, y, scaleX, scaleY, floor, floorHeight, tiltAngle, xEnd, nearRoom, isMan) {
+    INDO.Place.call(this, x*scaleX, floor*floorHeight-(x-xEnd)*scaleX*Math.tan(tiltAngle), y*scaleY, 'The '+(isMan? 'men':'women')+' WC next to the room '+nearRoom);
+    this.isMan = isMan;
+    this.nearRoom = nearRoom;
 };
 INDO.Wc.prototype = Object.create( INDO.Place.prototype );
 
 // 大楼入口(出口)
 INDO.Entrance = function(x, y, scaleX, scaleY, floor, floorHeight, tiltAngle, xEnd, entranceNO) {
-    INDO.Place.call(this, x*scaleX, floor*floorHeight+(xEnd-x)*scaleX*Math.tan(tiltAngle), y*scaleY, 'Entrance '+entranceNO);
+    INDO.Place.call(this, x*scaleX, floor*floorHeight-(x-xEnd)*scaleX*Math.tan(tiltAngle), y*scaleY, 'Entrance '+entranceNO);
     this.entranceNO = entranceNO;
 };
 INDO.Entrance.prototype = Object.create( INDO.Place.prototype );
 
 // 楼梯口
-INDO.Stair = function(x, y, scaleX, scaleY, floor, floorHeight, tiltAngle, xEnd, nearRoom) {
-    INDO.Place.call(this, x*scaleX, floor*floorHeight+(xEnd-x)*scaleX*Math.tan(tiltAngle), y*scaleY, 'The stairs next to the room '+nearRoom);
+// isLeftSide : 楼梯在教室的左边？
+INDO.Stair = function(x, y, scaleX, scaleY, floor, floorHeight, tiltAngle, xEnd, nearRoom, isLeftSide) {
+    INDO.Place.call(this, x*scaleX, floor*floorHeight-(x-xEnd)*scaleX*Math.tan(tiltAngle), y*scaleY, 'The stairs on the '+ (isLeftSide? 'left':'right') +' side of the room '+nearRoom);
     this.nearRoom = nearRoom;
 };
 INDO.Stair.prototype = Object.create( INDO.Place.prototype );
 
 // 转角
 INDO.Corner = function(x, y, scaleX, scaleY, floor, floorHeight, tiltAngle, xEnd, nearRoom) {
-    INDO.Place.call(this, x*scaleX, floor*floorHeight+(xEnd-x)*scaleX*Math.tan(tiltAngle), y*scaleY, 'The corner next to the room '+nearRoom);
+    INDO.Place.call(this, x*scaleX, floor*floorHeight-(x-xEnd)*scaleX*Math.tan(tiltAngle), y*scaleY, 'The corner next to the room '+nearRoom);
     this.nearRoom = nearRoom;
 };
 INDO.Corner.prototype = Object.create( INDO.Place.prototype );

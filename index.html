@@ -24,6 +24,7 @@
                 SCREEN_HEIGHT = window.innerHeight;
 
         var camera, controls, scene, renderer;
+        var Data;
 
         $(document).ready(function() {
             init();
@@ -71,6 +72,8 @@
         }
         function drawElements() {
 
+            Data = new INDO.Data();
+
             // grid
 
             var size = 500, step = 25;
@@ -116,7 +119,8 @@
             } );
 
             var geometry = new THREE.Geometry();
-            var Data = new INDO.Data();
+
+            //
             var placeList = Data.getPlaces();
             var pathList = Data.getPaths();
             for(var i in pathList) {
@@ -127,7 +131,7 @@
                 particle.position.y = placeList[t[0]].y;
                 particle.position.z = placeList[t[0]].z;
 
-                particle.position.multiplyScalar( 10 ); ///??
+                particle.position.multiplyScalar( 10 ); //10倍
 
                 scene.add( particle );
                 geometry.vertices.push( particle.position );
@@ -137,7 +141,7 @@
                 particle.position.y = placeList[t[1]].y;
                 particle.position.z = placeList[t[1]].z;
 
-                particle.position.multiplyScalar( 10 ); ///??
+                particle.position.multiplyScalar( 10 );
 
                 scene.add( particle );
                 geometry.vertices.push( particle.position );
