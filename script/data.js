@@ -15,6 +15,39 @@ var testdata = [
     {
         floor : 1,
         position : { x:2, z:1 }
+    },
+    {
+        floor : 1,
+        position : { x:3, z:1 }
+    },
+    {
+        floor : 1,
+        position : { x:4, z:1 }
+    },
+    {
+        floor : 1,
+        position : { x:5, z:1 }
+    },
+
+    {
+        floor : 2,
+        position : { x:1, z:1 }
+    },
+    {
+        floor : 2,
+        position : { x:2, z:1 }
+    },
+    {
+        floor : 2,
+        position : { x:3, z:1 }
+    },
+    {
+        floor : 2,
+        position : { x:4, z:1 }
+    },
+    {
+        floor : 2,
+        position : { x:5, z:1 }
     }
 ];
 

@@ -6,17 +6,19 @@
     <link rel="stylesheet" type="text/css" href="script/css/style.css" />
 
     <script type="text/javascript" src="script/threejs/build/three.js"></script>
+    <script type="text/javascript" src="script/threejs/build/controls/TrackballControls.js"></script>
     <script type="text/javascript" src="script/jquery-1.7.2.js"></script>
 
     <script type="text/javascript" src="script/indo.js"></script>
     <script type="text/javascript" src="script/data.js"></script>
+    <script type="text/javascript" src="script/math.js"></script>
 
     <script>
 
         var SCREEN_WIDTH = window.innerWidth,
                 SCREEN_HEIGHT = window.innerHeight;
 
-        var camera, scene, renderer;
+        var camera, controls, scene, renderer;
 
         $(document).ready(function() {
             init();
@@ -26,8 +28,26 @@
         function init() {
             var container = $("#container")[0];
 
-            camera = new THREE.PerspectiveCamera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000);
-            camera.position.z = 100;
+            scene = new THREE.Scene();
+
+//            camera = new THREE.PerspectiveCamera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000);
+//            camera.position.z = 100;
+
+            camera = new THREE.PerspectiveCamera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 5000 );
+            camera.position.set( 500, 250, 500 );
+            camera.lookAt( scene.position );
+
+            controls = new THREE.TrackballControls( camera );
+            controls.rotateSpeed = 1.0;
+            controls.zoomSpeed = 10;
+            controls.panSpeed = 0.8;
+            controls.noZoom = false;
+            controls.noPan = false;
+            controls.staticMoving = true;
+            controls.dynamicDampingFactor = 0.3;
+//            controls.keys = [ 65, 83, 68 ];
+            controls.addEventListener( 'change', render );
+
 
 //            camera.position.x = 0;//设置相机的位置坐标
 //            camera.position.y = 50;//设置相机的位置坐标
@@ -38,19 +58,51 @@
 //            camera.lookAt( {x:0, y:0, z:0 } );//设置视野的中心坐标
 
 
-            scene = new THREE.Scene();
-
             renderer = new THREE.CanvasRenderer();
             renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
             container.appendChild(renderer.domElement);
+
+            drawElements();
+
+            // Events
+
+            window.addEventListener( 'resize', onWindowResize, false );
         }
 
         function animate() {
-//            requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
             render();
+            controls.update();
         }
+        function drawElements() {
 
-        function render() {
+            // grid
+
+            var size = 500, step = 25;
+            var geometry = new THREE.Geometry();
+            var axis = new THREE.Geometry();
+
+            for ( var i = - size; i <= size; i += step ) {
+
+                if(i == 0) {
+                    axis.vertices.push( new THREE.Vector3( -size, 0, i ) );
+                    axis.vertices.push( new THREE.Vector3(  size, 0, i ) );
+
+                    axis.vertices.push( new THREE.Vector3( i, 0, -size ) );
+                    axis.vertices.push( new THREE.Vector3( i, 0,  size ) );
+                } else {
+                    geometry.vertices.push( new THREE.Vector3( -size, 0, i ) );
+                    geometry.vertices.push( new THREE.Vector3(  size, 0, i ) );
+
+                    geometry.vertices.push( new THREE.Vector3( i, 0, -size ) );
+                    geometry.vertices.push( new THREE.Vector3( i, 0,  size ) );
+                }
+            }
+            var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x888888, opacity: 0.5 } ), THREE.LinePieces );
+            scene.add( line );
+            var line = new THREE.Line( axis, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.5 } ), THREE.LinePieces );
+            scene.add( line );
+
             // particles
 
             var PI2 = Math.PI * 2;
@@ -87,13 +139,29 @@
 
             // lines
 
-            var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.5 } ) );
+            var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.5 } ), THREE.LinePieces );
             scene.add( line );
+        }
+        function render() {
 
 //            renderer.autoClear = false;       // no use?????
 //            renderer.clear();
 
             renderer.render( scene, camera );
+        }
+
+        // Events
+        function onWindowResize() {
+
+            camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+            controls.handleResize();
+
+            render();
+
         }
     </script>
 </head>
