@@ -9,9 +9,14 @@
     <script type="text/javascript" src="script/threejs/build/controls/TrackballControls.js"></script>
     <script type="text/javascript" src="script/jquery-1.7.2.js"></script>
 
+    <!--INDO MAP-->
+
     <script type="text/javascript" src="script/indo.js"></script>
-    <script type="text/javascript" src="script/data.js"></script>
+
     <script type="text/javascript" src="script/math.js"></script>
+    <script type="text/javascript" src="script/place.js"></script>
+
+    <script type="text/javascript" src="script/data.js"></script>
 
     <script>
 
@@ -47,16 +52,6 @@
             controls.dynamicDampingFactor = 0.3;
 //            controls.keys = [ 65, 83, 68 ];
             controls.addEventListener( 'change', render );
-
-
-//            camera.position.x = 0;//设置相机的位置坐标
-//            camera.position.y = 50;//设置相机的位置坐标
-//            camera.position.z = 100;//设置相机的位置坐标
-//            camera.up.x = 0;//设置相机的上为「x」轴方向
-//            camera.up.y = 1;//设置相机的上为「y」轴方向
-//            camera.up.z = 0;//设置相机的上为「z」轴方向
-//            camera.lookAt( {x:0, y:0, z:0 } );//设置视野的中心坐标
-
 
             renderer = new THREE.CanvasRenderer();
             renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -121,19 +116,30 @@
             } );
 
             var geometry = new THREE.Geometry();
-
-            for(var i in testdata) {
-                var t = testdata[i];
+            var Data = new INDO.Data();
+            var placeList = Data.getPlaces();
+            var pathList = Data.getPaths();
+            for(var i in pathList) {
+                var t = pathList[i];
 
                 var particle = new THREE.Particle( material );
-                particle.position.x = t.position.x;
-                particle.position.y = t.floor;
-                particle.position.z = t.position.z;
+                particle.position.x = placeList[t[0]].x;
+                particle.position.y = placeList[t[0]].y;
+                particle.position.z = placeList[t[0]].z;
 
-                particle.position.multiplyScalar( 10 );
+                particle.position.multiplyScalar( 10 ); ///??
 
                 scene.add( particle );
+                geometry.vertices.push( particle.position );
 
+                var particle = new THREE.Particle( material );
+                particle.position.x = placeList[t[1]].x;
+                particle.position.y = placeList[t[1]].y;
+                particle.position.z = placeList[t[1]].z;
+
+                particle.position.multiplyScalar( 10 ); ///??
+
+                scene.add( particle );
                 geometry.vertices.push( particle.position );
             }
 
