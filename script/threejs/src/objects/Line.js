@@ -25,7 +25,7 @@ THREE.Line = function ( geometry, material, type ) {
 THREE.LineStrip = 0;
 THREE.LinePieces = 1;
 
-THREE.Line.prototype = Object.create( THREE.Object3D.prototype );
+THREE.Line.prototype = Object.create( THREE.Object3D.prototype );        // 单继承
 
 THREE.Line.prototype.clone = function ( object ) {
 
