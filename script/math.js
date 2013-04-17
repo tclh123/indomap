@@ -306,3 +306,58 @@ INDO.Math.Vector3.prototype = {
     }
 
 };
+
+INDO.Math.INF = 1<<30;
+
+// 单源最短路
+// var ret = INDO.Math.Dijkstra(Data.getPlaces(), Data.getPaths(), 0, 7)
+INDO.Math.Dijkstra = function(points, edges, startIndex, endIndex) {
+    var father = [];    //保存路径
+    var route = [];     // 返回路径，end->start
+    var dist = [];      //到起点距离
+    var vis = [];       //标记点
+
+    var n = points.length;
+    var m = edges.length;
+    if(n<=0 || m<=0) return null;
+
+    for(var i=0; i<n; i++) dist[i] = i==startIndex? 0 : INDO.Math.INF;
+    vis[startIndex] = true;
+    var u = startIndex;
+
+    // loop
+    for(var k=0; k<n-1; k++) {
+        for(var i in edges) {
+            if(edges[i][0] == u) {
+                var v = edges[i][1];
+
+                var w = points[u].sub(points[v]).length();  // 3D空间中两点距离
+
+                dist[v] = Math.min(dist[v], dist[u]+w);
+            }
+        }
+        var minx = INDO.Math.INF;
+        var tu = -1;
+        for(var i=0; i<n; i++) {
+            if(!vis[i]) {
+                if(minx > dist[i]) {
+                    minx = dist[i];
+                    tu = i;
+                }
+            }
+        }
+        if(minx == INDO.Math.INF || tu == -1) break;    //说明其他点是无法到达了
+        father[tu] = u;
+        u = tu;
+        vis[u] = true;
+    }
+
+    // 不可达
+    if(dist[endIndex] == INDO.Math.INF) return { distance : INDO.Math.INF, route : [] };
+
+    for(var u = endIndex; ; u = father[u]) {
+        route.push(u);
+        if(u == startIndex) break;
+    }
+    return { distance : dist[endIndex], route : route };
+};
