@@ -599,7 +599,7 @@ var placeList = [
     {
         index : 49,
         type : 'room',
-        x : 21,
+        x : 22,
         y : 1,
         floor : 3,
         tiltAngle : tiltAngle,
@@ -609,7 +609,7 @@ var placeList = [
     {
         index : 50,
         type : 'stair',
-        x : 22,
+        x : 23,
         y : 1,
         floor : 3,
         tiltAngle : tiltAngle,
@@ -620,7 +620,7 @@ var placeList = [
     {
         index : 51,
         type : 'room',
-        x : 23,
+        x : 24,
         y : 1,
         floor : 3,
         tiltAngle : tiltAngle,
@@ -630,7 +630,7 @@ var placeList = [
     {
         index : 52,
         type : 'room',
-        x : 24,
+        x : 25,
         y : 1,
         floor : 3,
         tiltAngle : tiltAngle,
@@ -640,7 +640,7 @@ var placeList = [
     {
         index : 53,
         type : 'room',
-        x : 25,
+        x : 26,
         y : 1,
         floor : 3,
         tiltAngle : tiltAngle,
@@ -661,7 +661,7 @@ var placeList = [
     {
         index : 55,
         type : 'entrance',
-        x : 21,
+        x : 22,
         y : 0,
         floor : 0,
         tiltAngle : 0,
@@ -689,9 +689,332 @@ var placeList = [
 
      */
 
-    //TODO: 完善南楼
-
     //floor #4
+    {
+        index : 56,
+        type : 'stair',
+        x : 0,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '401',
+        isLeftSide : true
+    },
+    {
+        index : 57,
+        type : 'room',
+        x : 1,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '401'
+    },
+    {
+        index : 58,
+        type : 'room',
+        x : 2,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '403'
+    },
+    {
+        index : 59,
+        type : 'room',
+        x : 3,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '406'
+    },
+    {
+        index : 60,
+        type : 'stair',
+        x : 4,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '407',
+        isLeftSide : true
+    },
+    {
+        index : 61,
+        type : 'room',
+        x : 5,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '407'
+    },
+    {
+        index : 62,
+        type : 'stair',
+        x : 6,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '408',
+        isLeftSide : true
+    },
+    {
+        index : 63,
+        type : 'room',
+        x : 7,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '408'
+    },
+    //WC
+    {
+        index : 64,
+        type : 'wc',
+        x : 8,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '408',
+        isMan : false
+    },
+    {
+        index : 65,
+        type : 'room',
+        x : 9,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '411'
+    },
+    {
+        index : 66,
+        type : 'stair',
+        x : 10,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '411',
+        isLeftSide : false
+    },
+    {
+        index : 67,
+        type : 'room',
+        x : 11,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '412'
+    },
+    // 中区
+    {
+        index : 68,
+        type : 'corner',
+        x : 12,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '414'
+    },
+    {
+        index : 69,
+        type : 'room',
+        x : 13,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '414'
+    },
+    {
+        index : 70,
+        type : 'stair',
+        x : 14,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '414',
+        isLeftSide : false
+    },
+    {
+        index : 71,
+        type : 'room',
+        x : 15,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '415'
+    },
+    {
+        index : 72,
+        type : 'stair',
+        x : 16,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '415',
+        isLeftSide : false
+    },
+    {
+        index : 73,
+        type : 'room',
+        x : 17,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '416'
+    },
+    //WC
+    {
+        index : 74,
+        type : 'wc',
+        x : 18,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '416',
+        isMan : true
+    },
+    {
+        index : 75,
+        type : 'room',
+        x : 19,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '418'
+    },
+    {
+        index : 76,
+        type : 'stair',
+        x : 20,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '418',
+        isLeftSide : false
+    },
+    {
+        index : 77,
+        type : 'room',
+        x : 21,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '419'
+    },
+    // 右区
+    {
+        index : 78,
+        type : 'room',
+        x : 22,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '421'
+    },
+    {
+        index : 79,
+        type : 'stair',
+        x : 23,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        nearRoom : '421',
+        isLeftSide : false
+    },
+    {
+        index : 80,
+        type : 'room',
+        x : 24,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '422'
+    },
+    {
+        index : 81,
+        type : 'room',
+        x : 25,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '425'
+    },
+    {
+        index : 82,
+        type : 'room',
+        x : 26,
+        y : 1,
+        floor : 4,
+        tiltAngle : tiltAngle,
+        xEnd : 0,
+        roomid : '426'
+    },
+    /*
+    // 56-82
+     [56,57],
+     [57,58],
+     [58,59],
+     [59,60],
+     [60,61],
+     [61,62],
+     [62,63],
+     [63,64],
+     [64,65],
+     [65,66],
+     [66,67],
+     [67,68],
+     [68,69],
+     [69,70],
+     [70,71],
+     [71,72],
+     [72,73],
+     [73,74],
+     [74,75],
+     [75,76],
+     [76,77],
+     [77,78],
+     [78,79],
+     [79,80],
+     [80,81],
+     [81,82],
+     */
+
+    // TODO: 先加了一个宿舍，用于演示。。
+    {
+        index : 83,
+        type : 'place',
+        x : 30,
+        y : -30,
+        floor : 0,
+        descr : 'Dormitory #9'
+    },
+
+    //TODO: 完善南楼
     //floor #5
     //floor #6
     //floor #7
@@ -787,34 +1110,98 @@ var edgeList = [
 
     ////////////
     // floor #4
+    [56,57],
+    [57,58],
+    [58,59],
+    [59,60],
+    [60,61],
+    [61,62],
+    [62,63],
+    [63,64],
+    [64,65],
+    [65,66],
+    [66,67],
+    [67,68],
+    [68,69],
+    [69,70],
+    [70,71],
+    [71,72],
+    [72,73],
+    [73,74],
+    [74,75],
+    [75,76],
+    [76,77],
+    [77,78],
+    [78,79],
+    [79,80],
+    [80,81],
+    [81,82],
+    // stair
+    [56,28],
+    [60,32],
+    [62,34],
+    [66,38],
+    [70,42],
+    [72,44],
+    [76,48],
+    [79,50],
+
     ////////////
     // floor #5
     ////////////
     // floor #6
     ////////////
     // floor #7
+
+    // 各入口
+    [8,21],
+    [21,27],
+    [27,54],
+    [54,55],
+
+    // 跟宿舍
+    [54, 83],
+    [55, 83],
 ];
 
 INDO.Data.prototype = {
+    placeList : [],
+    pathList : [],
+
     getPlaces : function() {
-        var list = [];
+        this.placeList = [];
         for(var i in placeList) {
             var p = placeList[i];
             if(p.type == 'room') {
-                list.push(new INDO.Room(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.roomid));
+                this.placeList.push(new INDO.Room(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.roomid, i));
             } else if(p.type == 'entrance') {
-                list.push(new INDO.Entrance(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.entranceNO));
+                this.placeList.push(new INDO.Entrance(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.entranceNO, i));
             } else if(p.type == 'stair') {
-                list.push(new INDO.Stair(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.nearRoom, p.isLeftSide));
+                this.placeList.push(new INDO.Stair(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.nearRoom, p.isLeftSide, i));
             } else if(p.type == 'wc') {
-                list.push(new INDO.Wc(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.nearRoom, p.isMan));
+                this.placeList.push(new INDO.Wc(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.nearRoom, p.isMan, i));
             } else if(p.type == 'corner') {
-                list.push(new INDO.Corner(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.nearRoom));
+                this.placeList.push(new INDO.Corner(p.x, p.y, scaleX, scaleY, p.floor, floorHeight, p.tiltAngle, p.xEnd, p.nearRoom, i));
+
+            } else if(p.type == 'place') {
+                this.placeList.push(new INDO.Place(p.x*scaleX, p.floor*floorHeight, p.y*scaleY, p.descr, i));
             }
         }
-        return list;
     },
     getPaths : function() {
-        return edgeList;
+        this.pathList = edgeList;
+    },
+    search : function(roomid) {
+        for(var i in this.placeList) {
+            var p = this.placeList[i];
+            if((p instanceof INDO.Room) && p.roomid == roomid) {
+                p.index = i;
+                return p;
+            }
+        }
+        return null;
+    },
+    findRoute : function(from, to) {
+        return INDO.Math.Dijkstra(this.placeList, this.pathList, from, to).route;
     }
 };

@@ -8,3 +8,9 @@ body {
     margin: 0;
     overflow: hidden;
 }
+
+.sidebar {
+    width: 500px;
+    background-color: #eee;
+    overflow: auto;
+}

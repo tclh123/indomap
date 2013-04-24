@@ -6,3 +6,9 @@
  */
 
 var INDO = INDO || { version : '1.0' };
+
+var Data;
+
+var camera, controls, scene, renderer;
+
+var projector = new THREE.Projector(), mouse = { x: 0, y: 0 }, INTERSECTED;

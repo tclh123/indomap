@@ -328,12 +328,20 @@ INDO.Math.Dijkstra = function(points, edges, startIndex, endIndex) {
     // loop
     for(var k=0; k<n-1; k++) {
         for(var i in edges) {
-            if(edges[i][0] == u) {
-                var v = edges[i][1];
+            if(edges[i][0] == u || edges[i][1] == u) {  // 无向图
+                var v = edges[i][ edges[i][0] == u? 1:0 ];   // 取另一个端点
 
-                var w = points[u].sub(points[v]).length();  // 3D空间中两点距离
+//                console.log('u='+u+', v='+v);
 
-                dist[v] = Math.min(dist[v], dist[u]+w);
+                var vector = new INDO.Math.Vector3();
+                vector.subVectors(points[u], points[v]);
+                var w = vector.length();  // 3D空间中两点距离
+
+//                dist[v] = Math.min(dist[v], dist[u]+w);
+                if(dist[u]+w < dist[v]) {
+                    dist[v] = dist[u]+w;
+                    father[v] = u;
+                }
             }
         }
         var minx = INDO.Math.INF;
@@ -347,7 +355,7 @@ INDO.Math.Dijkstra = function(points, edges, startIndex, endIndex) {
             }
         }
         if(minx == INDO.Math.INF || tu == -1) break;    //说明其他点是无法到达了
-        father[tu] = u;
+//        father[tu] = u;
         u = tu;
         vis[u] = true;
     }

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)http://stemkoski.github.io/Three.js/Mouse-Tooltip.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Three.js -- Template</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		body 
+		{
+			font-family: Monospace;
+			font-weight: bold;
+			background-color: #ccccff;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+<style type="text/css"></style><style type="text/css">#yddContainer{display:block;font-family:Microsoft YaHei;position:relative;width:100%;height:100%;top:-4px;left:-4px;font-size:12px;border:1px solid}#yddTop{display:block;height:22px}#yddTopBorderlr{display:block;position:static;height:17px;padding:2px 28px;line-height:17px;font-size:12px;color:#5079bb;font-weight:bold;border-style:none solid;border-width:1px}#yddTopBorderlr .ydd-sp{position:absolute;top:2px;height:0;overflow:hidden}.ydd-icon{left:5px;width:17px;padding:0px 0px 0px 0px;padding-top:17px;background-position:-16px -44px}.ydd-close{right:5px;width:16px;padding-top:16px;background-position:left -44px}#yddKeyTitle{float:left;text-decoration:none}#yddMiddle{display:block;margin-bottom:10px}.ydd-tabs{display:block;margin:5px 0;padding:0 5px;height:18px;border-bottom:1px solid}.ydd-tab{display:block;float:left;height:18px;margin:0 5px -1px 0;padding:0 4px;line-height:18px;border:1px solid;border-bottom:none}.ydd-trans-container{display:block;line-height:160%}.ydd-trans-container a{text-decoration:none;}#yddBottom{position:absolute;bottom:0;left:0;width:100%;height:22px;line-height:22px;overflow:hidden;background-position:left -22px}.ydd-padding010{padding:0 10px}#yddWrapper{color:#252525;z-index:10001;background:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ab20.png);}#yddContainer{background:#fff;border-color:#4b7598}#yddTopBorderlr{border-color:#f0f8fc}#yddWrapper .ydd-sp{background-image:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ydd-sprite.png)}#yddWrapper a,#yddWrapper a:hover,#yddWrapper a:visited{color:#50799b}#yddWrapper .ydd-tabs{color:#959595}.ydd-tabs,.ydd-tab{background:#fff;border-color:#d5e7f3}#yddBottom{color:#363636}#yddWrapper{min-width:250px;max-width:400px;}</style></head>
+<body>
+
+<div id="message"></div>
+
+<!--<script src="./Three.js -- Template_files/Three.js"></script>-->
+<script src="../../script/threejs/build/three.js"></script>
+
+<script src="./Three.js -- Template_files/Detector.js"></script>
+<script src="./Three.js -- Template_files/Stats.js"></script>
+<script src="./Three.js -- Template_files/TrackballControls.js"></script>
+<script src="./Three.js -- Template_files/THREEx.KeyboardState.js"></script>
+<script src="./Three.js -- Template_files/THREEx.FullScreen.js"></script>
+<script src="./Three.js -- Template_files/THREEx.WindowResize.js"></script>
+
+<script>
+/*
+	Three.js "tutorials by example"
+	Author: Lee Stemkoski
+	Date: March 2013 (three.js v56)
+ */
+
+// MAIN
+
+// standard global variables
+var container, scene, camera, renderer, controls, stats;
+var keyboard = new THREEx.KeyboardState();
+var clock = new THREE.Clock();
+
+// custom global variables
+var cube;
+var projector, mouse = { x: 0, y: 0 }, INTERSECTED;
+var sprite1;
+var canvas1, context1, texture1;
+
+init();
+animate();
+
+// FUNCTIONS 		
+function init() 
+{
+	// SCENE
+//	scene = new THREE.Scene();
+//	// CAMERA
+	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+//	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+//	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+//	scene.add(camera);
+//	camera.position.set(0,150,400);
+//	camera.lookAt(scene.position);
+
+    scene = new THREE.Scene();
+
+//            camera = new THREE.PerspectiveCamera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000);
+//            camera.position.z = 100;
+
+    camera = new THREE.PerspectiveCamera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 5000 );
+    camera.position.set( 500, 250, 500 );
+    camera.lookAt( scene.position );
+
+
+	// RENDERER
+	if ( Detector.webgl )
+		renderer = new THREE.WebGLRenderer( {antialias:true} );
+	else
+		renderer = new THREE.CanvasRenderer();
+	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	container = document.createElement( 'div' );
+	document.body.appendChild( container );
+	container.appendChild( renderer.domElement );
+//	// EVENTS
+//	THREEx.WindowResize(renderer, camera);
+//	THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+//	// CONTROLS
+//	controls = new THREE.TrackballControls( camera );
+//	// STATS
+//	stats = new Stats();
+//	stats.domElement.style.position = 'absolute';
+//	stats.domElement.style.bottom = '0px';
+//	stats.domElement.style.zIndex = 100;
+//	container.appendChild( stats.domElement );
+//	// LIGHT
+//	var light = new THREE.PointLight(0xffffff);
+//	light.position.set(0,250,0);
+//	scene.add(light);
+//	// FLOOR
+//	var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
+//	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+//	floorTexture.repeat.set( 10, 10 );
+//	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+//	var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+//	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+//	floor.position.y = -0.5;
+//	floor.rotation.x = Math.PI / 2;
+//	floor.name = "Checkerboard Floor";
+//	scene.add(floor);
+//	// SKYBOX/FOG
+//	var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
+//	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
+//	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+//	scene.add(skyBox);
+//
+//	////////////
+//	// CUSTOM //
+//	////////////
+//	var cubeGeometry = new THREE.CubeGeometry( 50, 50, 50 );
+//	var cubeMaterial = new THREE.MeshBasicMaterial( { color: 0x000088 } );
+//	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+//	cube.position.set(0,26,0);
+//	cube.name = "Cube";
+//	scene.add(cube);
+//
+//	// initialize object to perform world/screen calculations
+//	projector = new THREE.Projector();
+	
+	// when the mouse moves, call the given function
+	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+		
+	/////// draw text on canvas /////////
+
+	// create a canvas element
+	canvas1 = document.createElement('canvas');
+	context1 = canvas1.getContext('2d');
+	context1.font = "Bold 20px Arial";
+	context1.fillStyle = "rgba(0,0,0,0.95)";
+    context1.fillText('Hello, world!', 0, 20);
+    
+	// canvas contents will be used for a texture
+	texture1 = new THREE.Texture(canvas1) 
+	texture1.needsUpdate = true;
+	
+	////////////////////////////////////////
+	
+	var spriteMaterial = new THREE.SpriteMaterial( { map: texture1, useScreenCoordinates: true, alignment: THREE.SpriteAlignment.topLeft } );
+	
+	sprite1 = new THREE.Sprite( spriteMaterial );
+	sprite1.scale.set(200,100,1.0);
+	sprite1.position.set( 50, 50, 0 );
+	scene.add( sprite1 );	
+
+	//////////////////////////////////////////
+	
+}
+
+function onDocumentMouseMove( event ) 
+{
+	// the following line would stop any other event handler from firing
+	// (such as the mouse's TrackballControls)
+	// event.preventDefault();
+
+	// update sprite position
+	sprite1.position.set( event.clientX, event.clientY, 0 );
+	
+	// update the mouse variable
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+function animate() 
+{
+    requestAnimationFrame( animate );
+	render();		
+//	update();
+}
+
+function update()
+{
+	
+	// create a Ray with origin at the mouse position
+	//   and direction into the scene (camera direction)
+	var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+	projector.unprojectVector( vector, camera );
+	var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+	// create an array containing all objects in the scene with which the ray intersects
+	var intersects = ray.intersectObjects( scene.children );
+
+	// INTERSECTED = the object in the scene currently closest to the camera 
+	//		and intersected by the Ray projected from the mouse position 	
+	
+	// if there is one (or more) intersections
+	if ( intersects.length > 0 )
+	{
+		// if the closest object intersected is not the currently stored intersection object
+		if ( intersects[ 0 ].object != INTERSECTED ) 
+		{
+		    // restore previous intersection object (if it exists) to its original color
+			if ( INTERSECTED ) 
+				INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+			// store reference to closest object as current intersection object
+			INTERSECTED = intersects[ 0 ].object;
+			// store color of closest object (for later restoration)
+			INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+			// set a new color for closest object
+			INTERSECTED.material.color.setHex( 0xffff00 );
+			
+			// update text, if it has a "name" field.
+			if ( intersects[ 0 ].object.name )
+			{
+			    context1.clearRect(0,0,640,480);
+				var message = intersects[ 0 ].object.name;
+
+                console.log('message:'+message);
+
+				var metrics = context1.measureText(message);
+				var width = metrics.width;
+				context1.fillStyle = "rgba(0,0,0,0.95)"; // black border
+				context1.fillRect( 0,0, width+8,20+8);
+				context1.fillStyle = "rgba(255,255,255,0.95)"; // white filler
+				context1.fillRect( 2,2, width+4,20+4 );
+				context1.fillStyle = "rgba(0,0,0,1)"; // text color
+				context1.fillText( message, 4,20 );
+				// TODO: reposition texture so that not partially obscured by mouse pointer
+				texture1.needsUpdate = true;
+			}
+			else
+			{
+				context1.clearRect(0,0,300,300);
+				texture1.needsUpdate = true;
+			}
+		}
+	} 
+	else // there are no intersections
+	{
+		// restore previous intersection object (if it exists) to its original color
+		if ( INTERSECTED ) 
+			INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+		// remove previous intersection object reference
+		//     by setting current intersection object to "nothing"
+		INTERSECTED = null;
+		context1.clearRect(0,0,300,300);
+		texture1.needsUpdate = true;
+	}
+
+	
+	controls.update();
+	stats.update();
+}
+
+function render() 
+{
+	renderer.render( scene, camera );
+}
+
+</script><div><canvas width="1280" height="684" style="width: 1280px; height: 684px; "></canvas><div style="cursor: pointer; width: 80px; opacity: 0.9; z-index: 100; position: absolute; bottom: 0px; "><div style="text-align: left; line-height: 1.2em; background-color: rgb(8, 8, 24); padding: 0px 0px 3px 3px; "><div style="font-family: Helvetica, Arial, sans-serif; font-size: 9px; color: rgb(0, 255, 255); font-weight: bold; ">34 FPS (29-61)</div><div style="position: relative; width: 74px; height: 30px; background-color: rgb(0, 255, 255); "><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 30px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 15.600000000000001px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 13.2px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 11.7px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 11.7px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 11.7px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 11.7px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 11.7px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 14.399999999999999px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.900000000000002px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 21.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 15.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.600000000000001px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 17.1px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 13.799999999999997px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 15.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 16.2px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 14.7px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 16.5px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12.3px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 12px; float: left; background-color: rgb(16, 16, 48); "></span><span style="width: 1px; height: 19.799999999999997px; float: left; background-color: rgb(16, 16, 48); "></span></div></div><div style="text-align: left; line-height: 1.2em; background-color: rgb(8, 24, 8); padding: 0px 0px 3px 3px; display: none; "><div style="font-family: Helvetica, Arial, sans-serif; font-size: 9px; color: rgb(0, 255, 0); font-weight: bold; ">16 MS (1-649)</div><div style="position: relative; width: 74px; height: 30px; background-color: rgb(0, 255, 0); "><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.75px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.3px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.45px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 25.8px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 29.25px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 28.5px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 21.3px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 28.2px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 24.3px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 28.05px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 26.85px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 28.2px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 26.85px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 28.35px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.3px; float: left; background-color: rgb(16, 48, 16); "></span><span style="width: 1px; height: 27.6px; float: left; background-color: rgb(16, 48, 16); "></span></div></div></div></div>
+
+
+
+</body></html>

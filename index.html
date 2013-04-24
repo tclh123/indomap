@@ -6,7 +6,9 @@
     <link rel="stylesheet" type="text/css" href="script/css/style.css" />
 
     <script type="text/javascript" src="script/threejs/build/three.js"></script>
-    <script type="text/javascript" src="script/threejs/build/controls/TrackballControls.js"></script>
+    <script type="text/javascript" src="script/threejs/build/Detector.js"></script>
+
+    <script type="text/javascript" src="script/TrackballControls.js"></script>
     <script type="text/javascript" src="script/jquery-1.7.2.js"></script>
 
     <!--INDO MAP-->
@@ -18,13 +20,18 @@
 
     <script type="text/javascript" src="script/data.js"></script>
 
+    <!--INDO MAP : UI-->
+    <script type="text/javascript" src="script/UI.js"></script>
+    <script type="text/javascript" src="script/ui/Sidebar.js"></script>
+    <script type="text/javascript" src="script/ui/Sidebar.Routing.js"></script>
+
     <script>
 
         var SCREEN_WIDTH = window.innerWidth,
                 SCREEN_HEIGHT = window.innerHeight;
 
-        var camera, controls, scene, renderer;
-        var Data;
+        var sprite1;
+        var canvas1, context1, texture1;
 
         $(document).ready(function() {
             init();
@@ -34,10 +41,15 @@
         function init() {
             var container = $("#container")[0];
 
-            scene = new THREE.Scene();
+            //UI
+            var sidebar = new Sidebar();
+            sidebar.setTop( '10px' );
+            sidebar.setLeft( '10px' );
+            container.appendChild(sidebar.dom);
 
-//            camera = new THREE.PerspectiveCamera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000);
-//            camera.position.z = 100;
+            // Three.js
+
+            scene = new THREE.Scene();
 
             camera = new THREE.PerspectiveCamera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 5000 );
             camera.position.set( 500, 250, 500 );
@@ -54,7 +66,11 @@
 //            controls.keys = [ 65, 83, 68 ];
             controls.addEventListener( 'change', render );
 
-            renderer = new THREE.CanvasRenderer();
+            if ( Detector.webgl )
+                renderer = new THREE.WebGLRenderer();
+            else
+                renderer = new THREE.CanvasRenderer();      // 用 canvas会有兼容性问题，不支持texture等
+
             renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
             container.appendChild(renderer.domElement);
 
@@ -63,12 +79,9 @@
             // Events
 
             window.addEventListener( 'resize', onWindowResize, false );
-        }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-            controls.update();
+            document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+            document.addEventListener( 'mousedown', onDocumentMouseDown, false );
         }
         function drawElements() {
 
@@ -77,89 +90,211 @@
             // grid
 
             var size = 500, step = 25;
-            var geometry = new THREE.Geometry();
-            var axis = new THREE.Geometry();
 
-            for ( var i = - size; i <= size; i += step ) {
+            if(Detector.webgl) {
+                var grid = new THREE.GridHelper( size, step );
+                scene.add( grid );
+            } else {             // TODO: 处理 CanvasRenderer 兼容性
 
-                if(i == 0) {
-                    axis.vertices.push( new THREE.Vector3( -size, 0, i ) );
-                    axis.vertices.push( new THREE.Vector3(  size, 0, i ) );
+                var geometry = new THREE.Geometry();
+                var axis = new THREE.Geometry();
 
-                    axis.vertices.push( new THREE.Vector3( i, 0, -size ) );
-                    axis.vertices.push( new THREE.Vector3( i, 0,  size ) );
-                } else {
-                    geometry.vertices.push( new THREE.Vector3( -size, 0, i ) );
-                    geometry.vertices.push( new THREE.Vector3(  size, 0, i ) );
+                for ( var i = - size; i <= size; i += step ) {
 
-                    geometry.vertices.push( new THREE.Vector3( i, 0, -size ) );
-                    geometry.vertices.push( new THREE.Vector3( i, 0,  size ) );
+                    if(i == 0) {
+                        axis.vertices.push( new THREE.Vector3( -size, 0, i ) );
+                        axis.vertices.push( new THREE.Vector3(  size, 0, i ) );
+
+                        axis.vertices.push( new THREE.Vector3( i, 0, -size ) );
+                        axis.vertices.push( new THREE.Vector3( i, 0,  size ) );
+                    } else {
+                        geometry.vertices.push( new THREE.Vector3( -size, 0, i ) );
+                        geometry.vertices.push( new THREE.Vector3(  size, 0, i ) );
+
+                        geometry.vertices.push( new THREE.Vector3( i, 0, -size ) );
+                        geometry.vertices.push( new THREE.Vector3( i, 0,  size ) );
+                    }
                 }
+                var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x888888, opacity: 0.5 } ), THREE.LinePieces );
+                scene.add( line );
+                var line = new THREE.Line( axis, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.5 } ), THREE.LinePieces );
+                scene.add( line );
+
             }
-            var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x888888, opacity: 0.5 } ), THREE.LinePieces );
-            scene.add( line );
-            var line = new THREE.Line( axis, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.5 } ), THREE.LinePieces );
-            scene.add( line );
 
-            // particles
-
-            var PI2 = Math.PI * 2;
-            var material = new THREE.ParticleCanvasMaterial( {
-
-                color: 0x000000,
-                program: function ( context ) {
-
-                    context.beginPath();
-                    context.arc( 0, 0, 1, 0, PI2, true );
-                    context.closePath();
-                    context.fill();
-
-                }
-
-            } );
-
+            //
             var geometry = new THREE.Geometry();
 
             //
-            var placeList = Data.getPlaces();
-            var pathList = Data.getPaths();
-            for(var i in pathList) {
-                var t = pathList[i];
+            Data.getPlaces();
+            Data.getPaths();
+            var maxIndex = -1;
+            for(var i in Data.pathList) {
+                for(var j=0; j<2; j++) {
+                    var index = Data.pathList[i][j];
+                    var place = Data.placeList[index];
 
-                var particle = new THREE.Particle( material );
-                particle.position.x = placeList[t[0]].x;
-                particle.position.y = placeList[t[0]].y;
-                particle.position.z = placeList[t[0]].z;
+                    var color;
+                    if(place instanceof INDO.Room) {
+                        color = 'blue';
+                    } else if(place instanceof INDO.Wc) {
+                        color = 'pink';
+                    } else if(place instanceof INDO.Entrance) {
+                        color = 'black';
+                    } else if(place instanceof INDO.Stair) {
+                        color = 'green';
+                    } else if(place instanceof INDO.Corner) {
+                        color = 'gray';
+                    } else {
+                        color = 'blue';
+                    }
 
-                particle.position.multiplyScalar( 10 ); //10倍
+                    // TODO: 处理 CanvasRenderer 兼容性
+//                    var PI2 = Math.PI * 2;
+//                    var material = new THREE.ParticleCanvasMaterial( {
+//                        program: function ( context ) {
+//                            context.beginPath();
+//                            context.arc( 0, 0, 1, 0, PI2, true );
+//                            context.closePath();
+//                            context.fill();
+//                        }
+//                    } );
+//                    material.color.setStyle(color);
+//
+//                    var particle = new THREE.Particle( material );
+//
+//                    particle.position.x = place.x;
+//                    particle.position.y = place.y;
+//                    particle.position.z = place.z;
+//
+//                    particle.position.multiplyScalar( 10 ); //10倍
 
-                scene.add( particle );
-                geometry.vertices.push( particle.position );
+                    //
 
-                var particle = new THREE.Particle( material );
-                particle.position.x = placeList[t[1]].x;
-                particle.position.y = placeList[t[1]].y;
-                particle.position.z = placeList[t[1]].z;
+                    var radius = 1;
+                    var geometry2 = new THREE.SphereGeometry( radius );
 
-                particle.position.multiplyScalar( 10 );
+                    var material2 = new THREE.MeshBasicMaterial();
+                    material2.color.setStyle(color);
 
-                scene.add( particle );
-                geometry.vertices.push( particle.position );
+                    var mesh = new THREE.Mesh( geometry2, material2 );
+                    mesh.position.x = place.x;
+                    mesh.position.y = place.y;
+                    mesh.position.z = place.z;
+
+                    mesh.position.multiplyScalar( 10 );
+
+
+                    if(index > maxIndex) {
+                        scene.add( mesh );
+                        maxIndex = index;
+                    }
+
+                    mesh.name = place.descr;
+                    mesh.index = place.index;
+
+                    geometry.vertices.push( mesh.position );
+                }
             }
 
             // lines
 
             var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.5 } ), THREE.LinePieces );
             scene.add( line );
+
+            /////// draw text on canvas /////////
+
+            // create a canvas element
+            canvas1 = document.createElement('canvas');
+            context1 = canvas1.getContext('2d');
+            context1.font = "Bold 20px Arial";
+            context1.fillStyle = "rgba(0,0,0,0.95)";
+            context1.fillText('Hello, world!', 0, 20);
+
+            // canvas contents will be used for a texture
+            texture1 = new THREE.Texture(canvas1);
+            texture1.needsUpdate = true;
+
+            ////////////////////////////////////////
+
+            var spriteMaterial = new THREE.SpriteMaterial( { map: texture1, useScreenCoordinates: true, alignment: THREE.SpriteAlignment.topLeft } );
+
+            sprite1 = new THREE.Sprite( spriteMaterial );
+            sprite1.scale.set(200,100,1.0);
+            sprite1.position.set( 50, 50, 0 );
+            scene.add( sprite1 );
         }
         function render() {
-
 //            renderer.autoClear = false;       // no use?????
 //            renderer.clear();
 
             renderer.render( scene, camera );
         }
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            hoverHandler();
+            controls.update();
+        }
+        function hoverHandler() {
+            var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+            projector.unprojectVector( vector, camera );
+            var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 
+            var intersects = ray.intersectObjects( scene.children );
+
+            // if there is one (or more) intersections
+            if ( intersects.length > 0 )
+            {
+                // if the closest object intersected is not the currently stored intersection object
+                if ( intersects[ 0 ].object != INTERSECTED )
+                {
+//                    // restore previous intersection object (if it exists) to its original color
+//                    if ( INTERSECTED )
+//                        INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+//                    // store reference to closest object as current intersection object
+                    INTERSECTED = intersects[ 0 ].object;
+//                    // store color of closest object (for later restoration)
+//                    INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+//                    // set a new color for closest object
+//                    INTERSECTED.material.color.setHex( 0xffff00 );
+
+                    // update text, if it has a "name" field.
+                    if ( intersects[ 0 ].object.name )
+                    {
+                        context1.clearRect(0,0,640,480);
+                        var message = intersects[ 0 ].object.name;
+//                        var message = "shit!";
+                        var metrics = context1.measureText(message);
+                        var width = metrics.width;
+                        context1.fillStyle = "rgba(0,0,0,0.95)"; // black border
+                        context1.fillRect( 0,0, width+8,20+8);
+                        context1.fillStyle = "rgba(255,255,255,0.95)"; // white filler
+                        context1.fillRect( 2,2, width+4,20+4 );
+                        context1.fillStyle = "rgba(0,0,0,1)"; // text color
+                        context1.fillText( message, 4,20 );
+                        // TODO: reposition texture so that not partially obscured by mouse pointer
+                        texture1.needsUpdate = true;
+                    }
+                    else
+                    {
+                        context1.clearRect(0,0,300,300);
+                        texture1.needsUpdate = true;
+                    }
+                }
+            }
+            else // there are no intersections
+            {
+                // restore previous intersection object (if it exists) to its original color
+//                if ( INTERSECTED )
+//                    INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+                // remove previous intersection object reference
+                //     by setting current intersection object to "nothing"
+                INTERSECTED = null;
+                context1.clearRect(0,0,300,300);
+                texture1.needsUpdate = true;
+            }
+        }
         // Events
         function onWindowResize() {
 
@@ -173,6 +308,119 @@
             render();
 
         }
+        function onDocumentMouseMove( event )
+        {
+            // update sprite position
+            sprite1.position.set( event.clientX+10, event.clientY-10, 0 );
+
+            // update the mouse variable
+            mouse.x = ( event.clientX / SCREEN_WIDTH ) * 2 - 1;
+            mouse.y = - ( event.clientY / SCREEN_HEIGHT ) * 2 + 1;
+        }
+
+        function onDocumentMouseDown( event ) {
+            var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+            projector.unprojectVector( vector, camera );
+            var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+            var intersects = ray.intersectObjects( scene.children );
+
+            // if there is one (or more) intersections
+            if ( intersects.length > 0 )
+            {
+                var obj = intersects[ 0 ].object;
+
+                var radius = 2;
+                var geometry = new THREE.SphereGeometry( radius );
+
+                var material = new THREE.MeshBasicMaterial();
+                material.color.setStyle('red');
+
+                var mesh = new THREE.Mesh( geometry, material );
+
+                mesh.position.x = obj.position.x;
+                mesh.position.y = obj.position.y;
+                mesh.position.z = obj.position.z;
+
+                if(selectedPlace.length == 2) {
+                    clearPath();
+                }
+                objects.push(mesh);
+                selectedPlace.push(mesh);
+                mesh.name = intersects[ 0 ].object.name;
+                mesh.index = intersects[ 0 ].object.index;
+                scene.add( mesh );
+            }
+
+            // routing
+            if(selectedPlace.length == 2) {
+                selectPath(selectedPlace[0], selectedPlace[1]);
+            }
+        }
+
+
+        // draw routing
+        var objects = [];
+        var selectedPlace = [];
+        function selectPlace(place) {
+            if(place) {
+
+                var radius = 2;
+                var geometry = new THREE.SphereGeometry( radius );
+
+                var material = new THREE.MeshBasicMaterial();
+                material.color.setStyle('red');
+
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.position.x = place.x;
+                mesh.position.y = place.y;
+                mesh.position.z = place.z;
+
+                mesh.position.multiplyScalar( 10 );
+
+                objects.push(mesh);
+                selectedPlace.push(mesh);
+                mesh.name = place.descr;
+                mesh.index = place.index;
+                scene.add( mesh );
+            }
+        }
+
+        function selectPath(from, to) {
+            console.log('from:'+from.index+', to:'+to.index);
+
+            var route = Data.findRoute(from.index, to.index);
+            console.log(route);
+            var geometry = new THREE.Geometry();
+            for(var i in route) {
+                var p = Data.placeList[route[i]];
+                var position = new THREE.Vector3(p.x, p.y, p.z);
+                position.multiplyScalar( 10 );
+                geometry.vertices.push(position);
+            }
+            var material = new THREE.LineBasicMaterial({linewidth:4});
+            material.color.setStyle('red');
+            var line = new THREE.Line( geometry, material);
+
+            objects.push(line);
+
+            var displayArea = $('#displayArea')[0];
+            displayArea.innerHTML = '';
+            for(var i=route.length-1; i>=0; i--) {
+                var p = Data.placeList[route[i]];
+                displayArea.innerHTML += p.descr+'\n';
+            }
+
+            scene.add( line );
+        }
+
+        function clearPath() {
+            for(var i in objects) {
+                scene.remove(objects[i]);
+            }
+            selectedPlace = [];
+        }
+
     </script>
 </head>
 <body>
